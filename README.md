@@ -218,7 +218,7 @@ flowchart TD
     B --> C[specify]
     C --> D[plan]
     D --> E[tasks]
-    E --> F[implement (可選)]
+    E --> F[implement optional]
 ```
 
 **2) 測試與報告流程**
