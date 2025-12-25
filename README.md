@@ -209,43 +209,33 @@ specify check
 
 ### 整體流程圖（Spec-Kit → Cypress → Allure → CI）
 
+為了提升可讀性，流程圖拆成兩張（字體更大、節點更清楚）。
+
+**1) Spec-Kit 規格流程**
 ```mermaid
-flowchart LR
-    A["需求/想法"]
-
-    subgraph "Spec-Kit"
-        B["/speckit.constitution"]
-        C["/speckit.specify"]
-        D["/speckit.plan"]
-        E["/speckit.tasks"]
-        F["/speckit.implement (可選)"]
-    end
-
-    subgraph "Cypress"
-        G["GUI: ./scripts/dev.ps1"]
-        H["Headless: ./scripts/test.ps1"]
-        I["測試產物<br/>screenshots / videos / allure-results"]
-    end
-
-    subgraph "Allure"
-        J["產生報告: npm run allure:generate"]
-        K["開啟報告: npm run allure:open"]
-    end
-
-    subgraph "CI"
-        L["CI 執行: npm run cy:run"]
-        M["產物上傳: allure-report"]
-    end
-
-    A --> B --> C --> D --> E --> F
-    F --> G
-    F --> H
-    G --> I
-    H --> I
-    I --> J --> K
-    L --> I
-    L --> M
+flowchart TD
+    A[需求/想法] --> B[constitution]
+    B --> C[specify]
+    C --> D[plan]
+    D --> E[tasks]
+    E --> F[implement (可選)]
 ```
+
+**2) 測試與報告流程**
+```mermaid
+flowchart TD
+    A[Cypress GUI/dev.ps1] --> B[測試產物]
+    C[Cypress Headless/test.ps1] --> B
+    B --> D[Allure 產生報告]
+    D --> E[Allure 開啟報告]
+    F[CI: cy:run] --> B
+    F --> G[CI: 上傳 allure-report]
+```
+
+補充對照：
+- `constitution/specify/plan/tasks/implement` 對應 `/speckit.*` 指令。
+- GUI 使用 `./scripts/dev.ps1`，Headless 使用 `./scripts/test.ps1`。
+- Allure 報告使用 `npm run allure:generate` / `npm run allure:open`。
 
 ### 一鍵流程（Spec-Kit 檢查 + Cypress GUI）
 若想用單一指令完成 Spec-Kit 檢查並開啟 Cypress GUI，可使用：
