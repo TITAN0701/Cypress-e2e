@@ -26,6 +26,17 @@
 - Allure 報告：Java 11+，`npm run allure:generate` 產出。
 - Windows 腳本權限：PowerShell ExecutionPolicy 設為 `RemoteSigned`（CurrentUser）。
 
+## Spec-Kit 最小化導入規範
+- 僅維護三份文件：`spec.md`、`plan.md`、`tasks.md`。
+- 每個功能建立新資料夾：`specs/NNN-<feature-name>/`。
+- 實作完成後同步更新 `tasks.md` 勾選狀態。
+
+## Spec-Kit CLI（可選）
+- 本專案不強制安裝 CLI；若要走完整 Spec-Kit 流程才需要。
+- 先備條件：Python 3.11+、uv、Git。
+- 安裝：`uv tool install specify-cli --from git+https://github.com/github/spec-kit.git`
+- 產生資料夾：`.specify/`（規格模板）與 `.codex/`（代理資料，已加入 `.gitignore`）。
+
 ## 測試指南
 - 單元與整合測試放在 `tests/`。
 - 測試命名統一使用 `*.test.*` 或 `*_test.*`。

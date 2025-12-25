@@ -22,6 +22,34 @@
 npm install
 ```
 
+## 使用範例（從安裝到執行）
+以下示範從零開始的基本流程：
+
+```powershell
+# 1) 安裝依賴
+npm install
+
+# 2) 建立環境設定檔（可選）
+Copy-Item .env.example .env
+
+# 3) 開啟 Cypress GUI
+./scripts/dev.ps1
+
+# 4) 直接執行全部測試
+./scripts/test.ps1
+
+# 5) 只跑單一 spec（範例）
+npm run cy:run -- --spec tests/e2e/actions.cy.js
+
+# 6) 產生與開啟 Allure 報告（可選）
+npm run allure:generate
+npm run allure:open
+```
+
+備註：
+- 想切換測試站點，修改 `.env` 的 `CYPRESS_BASE_URL`。
+- 若不需要 `.env`，會使用預設 `https://example.cypress.io`。
+
 ## 環境架設（整合版）
 以下為目前專案「完整」環境需求與設定項目，請依使用情境準備：
 
@@ -88,6 +116,59 @@ tests/      # 單元與整合測試
 docs/       # 文件
 assets/     # 靜態資源
 scripts/    # 開發/建置腳本
+specs/      # 規格/計畫/任務文件（Spec-Kit 最小化導入）
+```
+
+## Spec-Kit 最小化導入
+本專案只採用 Spec-Kit 的「規格 / 計畫 / 任務」三份文件，不使用完整的 CLI 流程。
+
+目前規格文件位置：
+- `specs/001-cypress-pom-framework/spec.md`
+- `specs/001-cypress-pom-framework/plan.md`
+- `specs/001-cypress-pom-framework/tasks.md`
+
+新增功能時的最低要求：
+1. 建立新的編號資料夾，例如 `specs/002-<feature-name>/`。
+2. 在資料夾內建立 `spec.md`、`plan.md`、`tasks.md`。
+3. 任務完成後同步更新 `tasks.md` 狀態。
+
+## Spec-Kit CLI（可選）
+只有在你要使用 Spec-Kit 的完整 CLI 流程時才需要安裝。若只維持本專案的最小化導入，**不需要**安裝。
+
+### 先備條件
+- Python 3.11+
+- [uv](https://docs.astral.sh/uv/)
+- Git
+
+### 安裝與檢查
+```powershell
+# 安裝 Specify CLI
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+
+# 檢查工具
+specify check
+```
+
+### 初始化新專案（完整流程才需要）
+```powershell
+# 建立新專案（建議）
+specify init <project-name> --ai codex --script ps
+
+# 或在既有專案內初始化（可能覆蓋檔案，請慎用）
+specify init --here --ai codex --script ps --force
+```
+
+### 導入後會新增的資料夾
+- `.specify/`：Spec-Kit 模板與規格檔案。
+- `.codex/`：AI agent 工作資料（已加入 `.gitignore`）。
+
+CLI 產生的規格會放在 `.specify/specs/`，與本專案的 `specs/` 不衝突；若你要完全採用 CLI 流程，可只維護 `.specify/specs/`。
+
+### Codex CLI 建議設定
+若使用 Codex CLI，建議設定專案專屬資料夾：
+
+```powershell
+setx CODEX_HOME "<project-root>\\.codex"
 ```
 
 ## 設定
