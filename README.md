@@ -171,6 +171,45 @@ CLI 產生的規格會放在 `.specify/specs/`，與本專案的 `specs/` 不衝
 setx CODEX_HOME "<project-root>\\.codex"
 ```
 
+### Spec-Kit 使用流程（本專案操作範例）
+以下是本專案實際使用過的流程，可直接照做：
+
+1. 確認 `specify` 可用：
+
+```powershell
+specify check
+```
+
+2. 建立專案憲章（測試品質、命名規範、POM、報告、CI）：
+
+```
+/speckit.constitution 制定本專案的測試品質、命名規範、POM 結構、報告與 CI 原則
+```
+
+3. 建立功能規格：
+
+```
+/speckit.specify 建立 Cypress POM 測試框架，包含頁面物件範例、測試範例、Allure 報告、CI 執行流程
+```
+
+4. 建立技術計畫：
+
+```
+/speckit.plan 使用 Cypress 13 + Allure，測試檔案放 tests/，以 PowerShell 腳本統一入口
+```
+
+5. 產生任務清單：
+
+```
+/speckit.tasks
+```
+
+### 產出位置
+- 憲章：`.specify/memory/constitution.md`
+- 規格：`.specify/specs/001-cypress-pom-framework/spec.md`
+- 計畫：`.specify/specs/001-cypress-pom-framework/plan.md`
+- 任務：`.specify/specs/001-cypress-pom-framework/tasks.md`
+
 ## 設定
 - 請使用 `.env.example` 作為範本建立 `.env`。
 - `CYPRESS_BASE_URL`：測試站點 baseUrl，預設為 `https://example.cypress.io`。

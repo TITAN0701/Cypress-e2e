@@ -37,6 +37,11 @@
 - 安裝：`uv tool install specify-cli --from git+https://github.com/github/spec-kit.git`
 - 產生資料夾：`.specify/`（規格模板）與 `.codex/`（代理資料，已加入 `.gitignore`）。
 
+## Spec-Kit 使用流程摘要
+- 檢查工具：`specify check`。
+- 依序執行：`/speckit.constitution` → `/speckit.specify` → `/speckit.plan` → `/speckit.tasks`。
+- 產出位置：`.specify/memory/` 與 `.specify/specs/`。
+
 ## 測試指南
 - 單元與整合測試放在 `tests/`。
 - 測試命名統一使用 `*.test.*` 或 `*_test.*`。
