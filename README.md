@@ -211,36 +211,30 @@ specify check
 
 ```mermaid
 flowchart LR
-    classDef spec fill:#e8f3ff,stroke:#2f6feb,stroke-width:1px,color:#0b2d6b;
-    classDef test fill:#eaf7ee,stroke:#2da44e,stroke-width:1px,color:#0f3a1d;
-    classDef report fill:#fff1e5,stroke:#d18616,stroke-width:1px,color:#5a2f00;
-    classDef ci fill:#f6f0ff,stroke:#8250df,stroke-width:1px,color:#2b1456;
-    classDef input fill:#f2f2f2,stroke:#6e7781,stroke-width:1px,color:#24292f;
+    A["需求/想法"]
 
-    A[需求/想法]:::input
-
-    subgraph S[Spec-Kit]
-        B[/speckit.constitution/]:::spec
-        C[/speckit.specify/]:::spec
-        D[/speckit.plan/]:::spec
-        E[/speckit.tasks/]:::spec
-        F[/speckit.implement (可選)/]:::spec
+    subgraph "Spec-Kit"
+        B["/speckit.constitution"]
+        C["/speckit.specify"]
+        D["/speckit.plan"]
+        E["/speckit.tasks"]
+        F["/speckit.implement (可選)"]
     end
 
-    subgraph T[Cypress]
-        G[GUI: ./scripts/dev.ps1]:::test
-        H[Headless: ./scripts/test.ps1]:::test
-        I[測試產物: screenshots / videos / allure-results]:::test
+    subgraph "Cypress"
+        G["GUI: ./scripts/dev.ps1"]
+        H["Headless: ./scripts/test.ps1"]
+        I["測試產物<br/>screenshots / videos / allure-results"]
     end
 
-    subgraph R[Allure]
-        J[產生報告: npm run allure:generate]:::report
-        K[開啟報告: npm run allure:open]:::report
+    subgraph "Allure"
+        J["產生報告: npm run allure:generate"]
+        K["開啟報告: npm run allure:open"]
     end
 
-    subgraph CCI[CI]
-        L[CI 執行: npm run cy:run]:::ci
-        M[產物上傳: allure-report]:::ci
+    subgraph "CI"
+        L["CI 執行: npm run cy:run"]
+        M["產物上傳: allure-report"]
     end
 
     A --> B --> C --> D --> E --> F
