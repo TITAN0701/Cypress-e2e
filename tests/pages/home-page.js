@@ -2,7 +2,7 @@ const BasePage = require("./base-page");
 
 class HomePage extends BasePage {
     actionsLink() {
-        return cy.contains("a", "Actions");
+        return cy.get("a[href='/commands/actions']").filter(":visible").first();
     }
 
     openActions() {

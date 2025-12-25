@@ -12,6 +12,7 @@
 尚未提交建置工具。新增後請提供單一且有文件說明的入口，並保持命令一致。範例模式：
 - `./scripts/dev.ps1` — 本機執行應用
 - `./scripts/test.ps1` — 執行完整測試套件
+- `./scripts/spec-kit-gui.ps1` — Spec-Kit 檢查後開啟 Cypress GUI
 - `./scripts/build.ps1` — 產出發行產物
 
 ## 程式碼風格與命名約定
@@ -41,6 +42,11 @@
 - 檢查工具：`specify check`。
 - 依序執行：`/speckit.constitution` → `/speckit.specify` → `/speckit.plan` → `/speckit.tasks`。
 - 產出位置：`.specify/memory/` 與 `.specify/specs/`。
+
+## Spec-Kit 指令速查
+- 聊天指令：`/speckit.constitution`、`/speckit.specify`、`/speckit.plan`、`/speckit.tasks`、`/speckit.implement`。
+- 可選指令：`/speckit.clarify`、`/speckit.analyze`、`/speckit.checklist`。
+- CLI 指令：`specify init`、`specify check`。
 
 ## 測試指南
 - 單元與整合測試放在 `tests/`。

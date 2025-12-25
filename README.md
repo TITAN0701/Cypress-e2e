@@ -32,16 +32,19 @@ npm install
 # 2) 建立環境設定檔（可選）
 Copy-Item .env.example .env
 
-# 3) 開啟 Cypress GUI
+# 3) (可選) Spec-Kit 檢查 + 開啟 Cypress GUI
+./scripts/spec-kit-gui.ps1
+
+# 4) 開啟 Cypress GUI
 ./scripts/dev.ps1
 
-# 4) 直接執行全部測試
+# 5) 直接執行全部測試
 ./scripts/test.ps1
 
-# 5) 只跑單一 spec（範例）
+# 6) 只跑單一 spec（範例）
 npm run cy:run -- --spec tests/e2e/actions.cy.js
 
-# 6) 產生與開啟 Allure 報告（可選）
+# 7) 產生與開啟 Allure 報告（可選）
 npm run allure:generate
 npm run allure:open
 ```
@@ -204,11 +207,93 @@ specify check
 /speckit.tasks
 ```
 
+### 整體流程圖（Spec-Kit → Cypress → Allure → CI）
+
+```mermaid
+flowchart LR
+    classDef spec fill:#e8f3ff,stroke:#2f6feb,stroke-width:1px,color:#0b2d6b;
+    classDef test fill:#eaf7ee,stroke:#2da44e,stroke-width:1px,color:#0f3a1d;
+    classDef report fill:#fff1e5,stroke:#d18616,stroke-width:1px,color:#5a2f00;
+    classDef ci fill:#f6f0ff,stroke:#8250df,stroke-width:1px,color:#2b1456;
+    classDef input fill:#f2f2f2,stroke:#6e7781,stroke-width:1px,color:#24292f;
+
+    A[需求/想法]:::input
+
+    subgraph S[Spec-Kit]
+        B[/speckit.constitution/]:::spec
+        C[/speckit.specify/]:::spec
+        D[/speckit.plan/]:::spec
+        E[/speckit.tasks/]:::spec
+        F[/speckit.implement (可選)/]:::spec
+    end
+
+    subgraph T[Cypress]
+        G[GUI: ./scripts/dev.ps1]:::test
+        H[Headless: ./scripts/test.ps1]:::test
+        I[測試產物: screenshots / videos / allure-results]:::test
+    end
+
+    subgraph R[Allure]
+        J[產生報告: npm run allure:generate]:::report
+        K[開啟報告: npm run allure:open]:::report
+    end
+
+    subgraph CCI[CI]
+        L[CI 執行: npm run cy:run]:::ci
+        M[產物上傳: allure-report]:::ci
+    end
+
+    A --> B --> C --> D --> E --> F
+    F --> G
+    F --> H
+    G --> I
+    H --> I
+    I --> J --> K
+    L --> I
+    L --> M
+```
+
+### 一鍵流程（Spec-Kit 檢查 + Cypress GUI）
+若想用單一指令完成 Spec-Kit 檢查並開啟 Cypress GUI，可使用：
+
+```powershell
+./scripts/spec-kit-gui.ps1
+```
+
+此腳本會先執行 `specify check` 與 `.specify` 檢查，再開啟 Cypress GUI。`/speckit.*` 指令仍需在對話中執行。
+
 ### 產出位置
 - 憲章：`.specify/memory/constitution.md`
 - 規格：`.specify/specs/001-cypress-pom-framework/spec.md`
 - 計畫：`.specify/specs/001-cypress-pom-framework/plan.md`
 - 任務：`.specify/specs/001-cypress-pom-framework/tasks.md`
+
+### Spec-Kit 指令速查
+**聊天指令（在 AI 對話中使用）**
+- `/speckit.constitution`：建立/更新專案憲章
+- `/speckit.specify`：建立功能規格
+- `/speckit.plan`：建立技術計畫
+- `/speckit.tasks`：產生任務清單
+- `/speckit.implement`：依任務實作
+- `/speckit.clarify`：釐清規格（可選）
+- `/speckit.analyze`：一致性檢查（可選）
+- `/speckit.checklist`：品質檢查清單（可選）
+
+**CLI 指令（在終端機使用）**
+- `specify init`：初始化 Spec-Kit 模板
+- `specify check`：檢查工具安裝狀態
+
+### 任務清單查看方式
+```powershell
+# 完整內容
+Get-Content .specify/specs/001-cypress-pom-framework/tasks.md
+
+# 只看已完成
+rg "^\- \\[x\\]" .specify/specs/001-cypress-pom-framework/tasks.md
+
+# 只看未完成
+rg "^\- \\[ \\]" .specify/specs/001-cypress-pom-framework/tasks.md
+```
 
 ## 設定
 - 請使用 `.env.example` 作為範本建立 `.env`。
