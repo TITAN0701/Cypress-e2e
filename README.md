@@ -94,6 +94,93 @@ describe("Login", () => {
 });
 ```
 
+## 表格資料比對（UI vs API）
+常見需求是「UI 表格要和 API 回傳一致」，可以先攔 API 再比對表格內容。
+
+```javascript
+// tests/e2e/orders-table.cy.js
+describe("Orders table", () => {
+    it("UI table matches API data", () => {
+        cy.intercept("GET", "/api/orders").as("getOrders");
+        cy.visit("/orders");
+
+        cy.wait("@getOrders").then(({ response }) => {
+            const apiRows = response.body.data.map((order) => [
+                String(order.id),
+                order.customerName,
+                order.status,
+                String(order.total),
+            ]);
+
+            cy.get("[data-test=orders-table] tbody tr").then(($rows) => {
+                const uiRows = [...$rows].map((row) =>
+                    [...row.querySelectorAll("td")].map((cell) =>
+                        cell.innerText.trim()
+                    )
+                );
+
+                expect(uiRows).to.deep.equal(apiRows);
+            });
+        });
+    });
+});
+```
+
+重點說明：
+- `cy.intercept` 取得 API 回傳資料。
+- 將 API 與 UI 都轉成相同的陣列結構再比對。
+- 若 UI 有格式化（日期、金額），要在比對前先對齊格式。
+
+## 表格前後狀態比對（更新前/後）
+適合檢查「更新按鈕」或「資料刷新」是否真的改變內容。
+
+```javascript
+// tests/e2e/orders-table-refresh.cy.js
+const getTableRows = () =>
+    cy.get("[data-test=orders-table] tbody tr").then(($rows) =>
+        [...$rows].map((row) =>
+            [...row.querySelectorAll("td")].map((cell) =>
+                cell.innerText.trim()
+            )
+        )
+    );
+
+describe("Orders table refresh", () => {
+    it("table changes after refresh", () => {
+        cy.visit("/orders");
+
+        getTableRows().then((before) => {
+            cy.wrap(before).as("beforeRows");
+        });
+
+        cy.get("[data-test=refresh]").click();
+
+        getTableRows().then((after) => {
+            cy.get("@beforeRows").should("not.deep.equal", after);
+        });
+    });
+});
+```
+
+## 只比關鍵欄位（更穩定）
+當 UI 會排序或有不穩定欄位時，只比重要欄位會更穩。
+
+```javascript
+// tests/e2e/orders-table-key-fields.cy.js
+describe("Orders table key fields", () => {
+    it("matches key columns only", () => {
+        cy.get("[data-test=orders-table] tbody tr").then(($rows) => {
+            const keyCols = [...$rows].map((row) => [
+                row.querySelector("td[data-col=id]").innerText.trim(),
+                row.querySelector("td[data-col=status]").innerText.trim(),
+            ]);
+
+            expect(keyCols).to.have.length.greaterThan(0);
+        });
+    });
+});
+```
+
 ## 自訂命令（Commands）
 若有共用操作可放在 `tests/support/commands.js`：
 
@@ -108,6 +195,39 @@ Cypress.Commands.add("loginByApi", (email, password) => {
 - 錄影：`tests/artifacts/videos/`
 - Allure 結果：`tests/artifacts/allure-results/`
 - Allure 報告：`tests/artifacts/allure-report/`
+- 視覺基準圖：`tests/artifacts/visual/snapshots/`
+- 視覺差異圖：`tests/artifacts/visual/diff/`
+
+## 視覺回歸（Image Snapshot）
+使用 `@simonsmith/cypress-image-snapshot` 做 UI 截圖比對，第一次會產生基準圖，之後會與基準圖做像素比對。
+
+最小範例：
+```javascript
+// tests/e2e/product-visual.cy.js
+describe("Product list visual", () => {
+    it("matches baseline", () => {
+        cy.visit("/products");
+        cy.get("[data-test=product-list]").matchImageSnapshot("product-list");
+    });
+});
+```
+
+運作方式：
+- `matchImageSnapshot("product-list")` 會截取指定區塊並用名稱建立/比對基準圖。
+- 第一次跑測試：產生 baseline；之後跑測試：新截圖跟 baseline 比對。
+- 差異超過閾值時測試會失敗，並輸出 diff 圖。
+
+更新基準圖（擇一）：
+- 刪除 `tests/artifacts/visual/snapshots/` 中對應的基準圖再重跑。
+- 若你有啟用套件的更新旗標，也可用該旗標重新產生 baseline。
+-
+  也可用這個簡單流程：
+  1) 刪除要更新的 baseline 檔案（或整個 `tests/artifacts/visual/snapshots/`）
+  2) 重新執行對應的 spec
+
+穩定性建議：
+- 固定 viewport，避免動畫、時間、隨機資料影響截圖。
+- 使用穩定測試資料或 mock，避免 UI 內容漂移。
 
 ## Allure 報告
 ```powershell

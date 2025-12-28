@@ -1,11 +1,18 @@
 const { defineConfig } = require("cypress");
 const { allureCypress } = require("allure-cypress/reporter");
+const {
+    addMatchImageSnapshotPlugin,
+} = require("@simonsmith/cypress-image-snapshot/plugin");
 
 module.exports = defineConfig({
     e2e: {
         setupNodeEvents(on, config) {
             allureCypress(on, config, {
                 resultsDir: "tests/artifacts/allure-results",
+            });
+            addMatchImageSnapshotPlugin(on, {
+                customSnapshotsDir: "tests/artifacts/visual/snapshots",
+                customDiffDir: "tests/artifacts/visual/diff",
             });
             return config;
         },

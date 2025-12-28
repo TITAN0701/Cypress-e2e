@@ -6,6 +6,7 @@
   "devDependencies": {
     "allure-commandline": "^2.32.0",
     "allure-cypress": "^3.4.3",
+    "@simonsmith/cypress-image-snapshot": "^9.1.0",
     "cypress": "^13.17.0"
   },
   "scripts": {
