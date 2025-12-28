@@ -181,6 +181,45 @@ describe("Orders table key fields", () => {
 });
 ```
 
+## 進階但很有價值的做法
+適合在專案穩定後逐步導入，能明顯提升測試穩定性與品質。
+
+### 1) Testing Library（語意化選擇器）
+用使用者角度找元素（role/label/text），比 `class` 更穩也更符合可近性。
+
+用法（安裝後）：
+```javascript
+// tests/support/e2e.js
+require("@testing-library/cypress/add-commands");
+```
+```javascript
+// tests/e2e/login.cy.js
+cy.findByRole("button", { name: "登入" }).click();
+cy.findByLabelText("Email").type("user@example.com");
+```
+
+### 2) 視覺回歸（Image Snapshot）
+透過截圖比對來防止 UI 退化，特別適合列表、表格、卡片牆等版面。
+
+用法（安裝後）：
+```javascript
+// tests/support/e2e.js
+require("@simonsmith/cypress-image-snapshot/command");
+```
+```javascript
+// tests/e2e/product-visual.cy.js
+cy.get("[data-test=product-list]").matchImageSnapshot("product-list");
+```
+
+### 3) 固定 viewport + 穩定資料
+避免因版面尺寸或資料漂移造成測試不穩定。
+
+用法：
+```javascript
+cy.viewport(1280, 720);
+cy.intercept("GET", "/api/orders", { fixture: "orders.json" }).as("getOrders");
+```
+
 ## 自訂命令（Commands）
 若有共用操作可放在 `tests/support/commands.js`：
 
