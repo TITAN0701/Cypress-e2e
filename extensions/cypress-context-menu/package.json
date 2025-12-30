@@ -1,0 +1,34 @@
+{
+  "name": "cypress-context-menu",
+  "displayName": "Cypress Context Menu",
+  "description": "Adds an editor context menu item to open Cypress.",
+  "version": "0.0.1",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:cypress-context-menu.openCypress"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cypress-context-menu.openCypress",
+        "title": "Open Cypress"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "cypress-context-menu.openCypress",
+          "when": "editorTextFocus",
+          "group": "navigation@100"
+        }
+      ]
+    }
+  }
+}
