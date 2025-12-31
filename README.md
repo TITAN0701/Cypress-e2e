@@ -31,6 +31,19 @@ Copy-Item .env.example .env   # 可選，設定測試站點
 npm run cy:run -- --spec tests/e2e/actions.cy.js
 ```
 
+## VS Code 右鍵開啟 Cypress（純 Cypress 指令）
+作法：
+- 右鍵編輯器區域，選 `Open Cypress`。
+- 實際執行的是 `npx cypress open`，等同 `./scripts/dev.ps1` 或 `npm run cy:open`。
+
+原理：
+- 擴充功能 `extensions/cypress-context-menu/` 只註冊一個命令：`cypress-context-menu.openCypress`。
+- 右鍵選單點擊後，命令會觸發 VS Code task `Open Cypress`。
+- task 定義在 `.vscode/tasks.json`，內容就是 `npx cypress open`。
+
+調整方式：
+- 想改成其他啟動指令（例如 `npm run cy:open` 或 `./scripts/dev.ps1`），直接改 `.vscode/tasks.json` 的 `command` 即可。
+
 ## 專案結構
 ```
 src/        # 應用/原始碼
